@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+import os
 
 class Bond:
     """
@@ -46,14 +47,12 @@ class Bond:
         ]
         return present_values
     
-    def plot_cash_flows(bond, title="Bond Cash Flow Diagram", inflation_adjusted=False):
+    def plot_cash_flows(bond, filepath="_data/graphs/", inflation_adjusted=False):
         """
-        Plot the cash flow diagram for a bond using a bar chart.
-        If inflation_adjusted is True, also plot the discount rate on a separate subplot.
-        Overlay the cumulative sum of cash flows on the cash flow subplot.
+        Plot the cash flow diagram for a bond and save the plots to separate files.
 
         :param bond: The bond object.
-        :param title: The title of the plot.
+        :param filepath: The directory where the plots will be saved (default: '_data/graphs/').
         :param inflation_adjusted: Whether to plot inflation-adjusted cash flows and discount rates.
         """
         if inflation_adjusted:
@@ -64,32 +63,36 @@ class Bond:
         times = [cf[0] for cf in cash_flows]
         amounts = [cf[1] for cf in cash_flows]
 
-        # Calculate cumulative sum of cash flows
-        cumulative_cash_flows = [sum(amounts[:i+1]) for i in range(len(amounts))]
+        # Create the directory if it doesn't exist
+        os.makedirs(filepath, exist_ok=True)
 
-        # Create a figure with two subplots
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8))  # Smaller figure size
-        fig.suptitle(title, fontsize=14)
+        # Generate the base filename
+        filename_base = f"{bond.inflation_model.__class__.__name__}-{bond.face_value}-{int(bond.maturity)}"
 
-        # Plot cash flows on the first subplot
+        # Plot cash flows and cumulative sum
+        fig1, ax1 = plt.subplots(figsize=(10, 6))
         bars = ax1.bar(times, amounts, width=0.4, color='blue', alpha=0.7, label="Cash Flows")
         for bar in bars:
             height = bar.get_height()
             ax1.text(bar.get_x() + bar.get_width() / 2, height, f'{height:.2f}', ha='center', va='bottom', fontsize=8)
 
-        # Overlay cumulative cash flows as a line graph
-        ax1.plot(times, cumulative_cash_flows, color='green', marker='o', label="Cumulative Cash Flows")
         ax1.axhline(0, color='black', linewidth=0.8)
         ax1.set_xlabel("Time (Years)", fontsize=10)
         ax1.set_ylabel("Cash Flow Amount ($)", fontsize=10)
         ax1.grid(True, linestyle='--', alpha=0.6)
         ax1.set_xticks(times)
-        ax1.set_title("Cash Flows and Cumulative Cash Flows", fontsize=12)
+        ax1.set_title("Cash Flows", fontsize=12)
         ax1.legend(loc="upper left")
 
-        # Plot discount rates on the second subplot if inflation_adjusted is True
+        # Save the cash flow plot
+        cash_flow_filename = os.path.join(filepath, f"{filename_base}-cash_flows.png")
+        fig1.savefig(cash_flow_filename)
+        plt.close(fig1)
+
+        # Plot discount rates if inflation_adjusted is True
         if inflation_adjusted:
             discount_rates = bond.inflation_model.get_discount_rates(times)
+            fig2, ax2 = plt.subplots(figsize=(10, 6))
             ax2.plot(times, discount_rates, color='red', marker='o', label="Discount Rate")
             ax2.set_xlabel("Time (Years)", fontsize=10)
             ax2.set_ylabel("Discount Rate (%)", color='red', fontsize=10)
@@ -97,23 +100,10 @@ class Bond:
             ax2.grid(True, linestyle='--', alpha=0.6)
             ax2.set_title("Discount Rates Over Time", fontsize=12)
 
-        # Add bond parameters as text outside the figure
-        params_label = (
-            f"Face Value: ${bond.face_value:.2f}\n"
-            f"Coupon Rate: {bond.coupon_rate * 100:.2f}%\n"
-            f"Maturity: {bond.maturity} years\n"
-            f"Payment Frequency: {bond.payment_frequency} per year"
-        )
-        plt.figtext(
-            0.95, 0.5, params_label, fontsize=10,
-            verticalalignment='center', horizontalalignment='right',
-            bbox=dict(facecolor='white', alpha=0.8, edgecolor='black', boxstyle='round,pad=0.5')
-        )
-
-        # Adjust layout and display
-        plt.tight_layout()
-        plt.subplots_adjust(right=0.7)  # Make space for the text box
-        plt.show()
+            # Save the discount rate plot
+            discount_rate_filename = os.path.join(filepath, f"{filename_base}-discount_rates.png")
+            fig2.savefig(discount_rate_filename)
+            plt.close(fig2)
 
     def get_bond_data_table(self) -> pd.DataFrame:
         """

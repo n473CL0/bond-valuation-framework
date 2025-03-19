@@ -21,4 +21,4 @@ bond = FixedRateBond(
 )
 
 # Plot inflation-adjusted cash flows
-bond.plot_cash_flows(title="Inflation-Adjusted Bond Cash Flows", inflation_adjusted=True)
+bond.plot_cash_flows(inflation_adjusted=True)

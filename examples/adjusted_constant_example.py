@@ -15,4 +15,4 @@ bond = FixedRateBond(
 )
 
 # Plot cash flows and discount rates
-bond.plot_cash_flows(title="Fixed-Rate Bond with Constant Discount Rate", inflation_adjusted=True)
+bond.plot_cash_flows(inflation_adjusted=True)
