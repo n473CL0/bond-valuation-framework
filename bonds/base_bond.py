@@ -39,4 +39,4 @@ class Bond:
         :param inflation_rate: The annual inflation rate (e.g., 0.02 for 2%).
         :return: The real value of the bond.
         """
-        return nominal_value / (1 + inflation_rate) ** self.maturity
+        return self.face_value / (1 + inflation_rate) ** self.maturity
