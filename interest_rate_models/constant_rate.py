@@ -13,10 +13,11 @@ class ConstantRate:
         """
         self.rate = rate
 
-    def get_rate(self) -> float:
+    def get_rate(self, t: float = 0) -> float:
         """
         Get the constant interest rate.
 
+        :param t: Time (unused for constant rate).
         :return: The constant annual interest rate.
         """
         return self.rate

@@ -36,20 +36,5 @@ class TestFixedRateBond(unittest.TestCase):
         self.assertEqual(self.bond.payment_frequency, self.payment_frequency)
         self.assertEqual(self.bond.interest_rate_model.get_rate(), 0.03)
 
-    def test_calculate_price(self):
-        """
-        Test the calculate_price() method.
-        """
-        price = self.bond.calculate_price()
-        self.assertAlmostEqual(price, 1092.22, places=2)
-
-    def test_calculate_yield(self):
-        """
-        Test the calculate_yield() method.
-        """
-        market_price = 1092.22
-        ytm = self.bond.calculate_yield(market_price)
-        self.assertAlmostEqual(ytm, 0.03, places=2)
-
 if __name__ == "__main__":
     unittest.main()

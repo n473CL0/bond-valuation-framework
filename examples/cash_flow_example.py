@@ -2,7 +2,6 @@
 
 from bonds.fixed_rate_bond import FixedRateBond
 from interest_rate_models.constant_rate import ConstantRate
-from utils.cash_flow import plot_cash_flows
 
 # Define bond parameters
 face_value = 1000
@@ -21,4 +20,4 @@ bond = FixedRateBond(
 )
 
 # Plot the cash flow diagram
-plot_cash_flows(bond, title="Fixed-Rate Bond Cash Flows")
+bond.plot_cash_flows()
