@@ -7,7 +7,7 @@ class FixedRateBond(Bond):
     A class representing a fixed-rate bond.
     """
 
-    def __init__(self, face_value: float, coupon_rate: float, maturity: float, payment_frequency: int, interest_rate_model):
+    def __init__(self, face_value: float, price: float, coupon_rate: float, maturity: float, payment_frequency: int, inflation_model):
         """
         Initialize a fixed-rate bond.
 
@@ -17,7 +17,7 @@ class FixedRateBond(Bond):
         :param payment_frequency: The number of coupon payments per year.
         :param interest_rate_model: The interest rate model to use for cash flow calculations.
         """
-        super().__init__(face_value, maturity, interest_rate_model)
+        super().__init__(face_value, price, maturity, inflation_model)
         self.coupon_rate = coupon_rate
         self.payment_frequency = payment_frequency
 
@@ -27,7 +27,7 @@ class FixedRateBond(Bond):
 
         :return: A list of tuples (time_period, cash_flow).
         """
-        cash_flows = []
+        cash_flows = [(0, -self.price)]
         n_periods = int(self.maturity * self.payment_frequency)
         coupon_payment = (self.coupon_rate / self.payment_frequency) * self.face_value
 
@@ -36,6 +36,7 @@ class FixedRateBond(Bond):
             cash_flows.append((time_period, coupon_payment))
 
         # Add face value repayment and final coupon payment at maturity
-        cash_flows.append((self.maturity, self.face_value + coupon_payment))
+        final_payment = self.face_value + coupon_payment
+        cash_flows.append((self.maturity, final_payment))
 
         return cash_flows
