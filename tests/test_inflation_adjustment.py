@@ -36,7 +36,7 @@ class TestInflationAdjustment(unittest.TestCase):
         Test the adjust_for_inflation() method when inflation is zero.
         """
         inflation_rate = 0.0  # 0% inflation
-        real_value = self.bond.adjust_for_inflation(inflation_rate)
+        real_value = self.bond.adjust_for_inflation(inflation_rate=inflation_rate)
         self.assertAlmostEqual(real_value, self.face_value, places=2)
 
     def test_adjust_for_inflation_high_inflation(self):

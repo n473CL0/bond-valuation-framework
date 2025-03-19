@@ -31,7 +31,7 @@ class Bond:
         """
         raise NotImplementedError("Subclasses must implement calculate_yield().")
 
-    def adjust_for_inflation(self, nominal_value: float, inflation_rate: float) -> float:
+    def adjust_for_inflation(self, inflation_rate: float) -> float:
         """
         Adjust the nominal value to its real value using the inflation rate.
 
