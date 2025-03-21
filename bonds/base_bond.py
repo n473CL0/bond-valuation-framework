@@ -61,13 +61,13 @@ class Bond:
             cash_flows = bond.calculate_cash_flows()
 
         times = [cf[0] for cf in cash_flows]
-        amounts = [cf[1] for cf in cash_flows]
+        amounts = [round(cf[1] / 1000000, 2) for cf in cash_flows]
 
         # Create the directory if it doesn't exist
         os.makedirs(filepath, exist_ok=True)
 
         # Generate the base filename
-        filename_base = f"{bond.inflation_model.__class__.__name__}-{bond.face_value}-{int(bond.maturity)}"
+        filename_base = f"{bond.__class__.__name__}-{bond.inflation_model.__class__.__name__}-{bond.face_value}-{int(bond.maturity)}"
 
         # Plot cash flows and cumulative sum
         fig1, ax1 = plt.subplots(figsize=(10, 6))
@@ -78,7 +78,7 @@ class Bond:
 
         ax1.axhline(0, color='black', linewidth=0.8)
         ax1.set_xlabel("Time (Years)", fontsize=10)
-        ax1.set_ylabel("Cash Flow Amount ($)", fontsize=10)
+        ax1.set_ylabel("Cash Flow Amount (£M)", fontsize=10)
         ax1.grid(True, linestyle='--', alpha=0.6)
         ax1.set_xticks(times)
         ax1.set_title("Cash Flows", fontsize=12)
