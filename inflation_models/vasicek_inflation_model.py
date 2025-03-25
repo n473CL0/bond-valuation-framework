@@ -1,11 +1,12 @@
 import numpy as np
+from inflation_models.discount_rate_model import DiscountRateModel
 
-class VasicekDiscountRateModel:
+class VasicekDiscountRateModel(DiscountRateModel):
     """
     A discount rate model based on the Vasicek interest rate model.
     """
 
-    def __init__(self, a: float, b: float, sigma: float, r0: float, max_time: float, dt: float = 0.01):
+    def __init__(self, a: float, b: float, sigma: float, r0: float, max_time: float, dt: float = 0.25):
         """
         Initialize the Vasicek model.
 

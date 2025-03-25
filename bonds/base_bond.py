@@ -33,7 +33,7 @@ class Bond:
 
     def calculate_pv_of_cash_flows(self) -> list:
         """
-        Calculate the present value of the bond's cash flows using the discount rate model.
+        Calculate the present value of the bond's cash flows using the correct discounting method.
 
         :return: A list of tuples (time, present_value), where `time` is the time at which the cash flow occurs.
         """
@@ -41,13 +41,21 @@ class Bond:
         times = [time for time, _ in cash_flows]  # Extract times from cash flows
         discount_rates = self.inflation_model.get_discount_rates(times)  # Get discount rates for all times
 
+        # Compute the cumulative discount factor over time
+        cumulative_discount_factors = [1]  # Start with 1 for time = 0
+        for i in range(1, len(discount_rates)):
+            cumulative_discount_factors.append(cumulative_discount_factors[-1] * (1 + discount_rates[i]) ** -1)
+
+        # Apply discounting correctly
         present_values = [
-            (time, cash_flow * (1 + discount_rate) ** (-time))
-            for (time, cash_flow), discount_rate in zip(cash_flows, discount_rates)
+            (time, cash_flow * cumulative_discount_factor)
+            for (time, cash_flow), cumulative_discount_factor in zip(cash_flows, cumulative_discount_factors)
         ]
+
         return present_values
+
     
-    def plot_cash_flows(bond, filepath="_data/graphs/", inflation_adjusted=False):
+    def plot_cash_flows(bond, title="Cash Flows", filepath="_data/graphs/", inflation_adjusted=False):
         """
         Plot the cash flow diagram for a bond and save the plots to separate files.
 
@@ -60,14 +68,19 @@ class Bond:
         else:
             cash_flows = bond.calculate_cash_flows()
 
+        print(cash_flows)
+
         times = [cf[0] for cf in cash_flows]
-        amounts = [round(cf[1] / 1000000, 2) for cf in cash_flows]
+        amounts = [round(cf[1], 2) for cf in cash_flows]
 
         # Create the directory if it doesn't exist
         os.makedirs(filepath, exist_ok=True)
-
+        
         # Generate the base filename
-        filename_base = f"{bond.__class__.__name__}-{bond.inflation_model.__class__.__name__}-{bond.face_value}-{int(bond.maturity)}"
+        if inflation_adjusted:
+            filename_base = f"{bond.__class__.__name__[:5]}-{bond.inflation_model.__class__.__name__[:5]}-{bond.face_value}"
+        else:
+            filename_base = f"{bond.__class__.__name__[:5]}-not_adjusted-{bond.face_value}"
 
         # Plot cash flows and cumulative sum
         fig1, ax1 = plt.subplots(figsize=(10, 6))
@@ -81,7 +94,7 @@ class Bond:
         ax1.set_ylabel("Cash Flow Amount (£M)", fontsize=10)
         ax1.grid(True, linestyle='--', alpha=0.6)
         ax1.set_xticks(times)
-        ax1.set_title("Cash Flows", fontsize=12)
+        ax1.set_title(title, fontsize=12)
         ax1.legend(loc="upper left")
 
         # Save the cash flow plot

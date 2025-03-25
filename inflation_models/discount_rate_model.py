@@ -1,9 +1,4 @@
-from inflation_models.discount_rate_model import DiscountRateModel
-
-class ConstantDiscountRateModel(DiscountRateModel):
-    """
-    A discount rate model with a constant discount rate.
-    """
+class DiscountRateModel:
 
     def __init__(self, rate: float):
         """
@@ -15,9 +10,9 @@ class ConstantDiscountRateModel(DiscountRateModel):
 
     def get_discount_rates(self, times: list) -> list:
         """
-        Return a list of constant discount rates for the given times.
+        Calculate the discount rates at the given times.
 
         :param times: A list of times at which the discount rates are requested.
-        :return: A list of constant discount rates.
+        :return: A list of discount rates corresponding to the given times.
         """
-        return [self.rate for _ in times]
+        raise NotImplementedError('Must be implemented by the subclass')

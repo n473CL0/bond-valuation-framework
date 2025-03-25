@@ -25,5 +25,5 @@ print("Bond Data Table with Linear Inflation Model:")
 print(bond_data_table)
 
 # Export the table to a CSV file
-bond_data_table.to_csv("bond_data_linear_inflation.csv", index=False)
+bond_data_table.to_csv("_data/csv/bond_data_linear_inflation.csv", index=False)
 print("\nBond data exported to 'bond_data_linear_inflation.csv'.")

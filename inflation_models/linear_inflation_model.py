@@ -1,4 +1,6 @@
-class LinearInflationModel:
+from inflation_models.discount_rate_model import DiscountRateModel
+
+class LinearInflationModel(DiscountRateModel):
     """
     An inflation model where the discount rate changes by a constant amount over time.
     """
