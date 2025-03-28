@@ -7,7 +7,7 @@ class Bond:
     Base class for all bond types.
     """
 
-    def __init__(self, face_value: float, price: float, maturity: float, inflation_model):
+    def __init__(self, face_value: float, payment_frequency: int, price: float, maturity: float, inflation_model):
         """
         Initialize a bond with common attributes.
 
@@ -18,6 +18,7 @@ class Bond:
                                     Must implement a `get_discount_rates(times)` method.
         """
         self.face_value = face_value
+        self.payment_frequency = payment_frequency
         self.price = price
         self.maturity = maturity
         self.inflation_model = inflation_model
@@ -118,7 +119,7 @@ class Bond:
             fig2.savefig(discount_rate_filename)
             plt.close(fig2)
 
-    def get_bond_data_table(self) -> pd.DataFrame:
+    def table_cash_flows(self) -> pd.DataFrame:
         """
         Create a DataFrame with the bond's cash flow data, including:
         - Time (Years)

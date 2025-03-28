@@ -15,9 +15,8 @@ class PartiallyAmortizingBond(Bond):
         :param discount_rate_model: The discount rate model to use for cash flow calculations.
                                     Must implement a `get_discount_rates(times)` method.
         """
-        super().__init__(face_value, price, maturity, inflation_model)
+        super().__init__(face_value, payment_frequency, price, maturity, inflation_model)
         self.coupon_rate = coupon_rate
-        self.payment_frequency = payment_frequency
         self.baloon_payment = baloon_payment
 
     def calculate_cash_flows(self) -> list:

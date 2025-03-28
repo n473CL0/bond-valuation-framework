@@ -22,5 +22,5 @@ bond = FixedRateBond(
 
 # Plot inflation-adjusted cash flows
 bond.plot_cash_flows(inflation_adjusted=True)
-bond_table = bond.get_bond_data_table()
+bond_table = bond.table_cash_flows()
 bond_table.to_csv("_data/csv/vasicek_adjusted.csv", index=False)

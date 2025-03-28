@@ -17,9 +17,8 @@ class FixedRateBond(Bond):
         :param payment_frequency: The number of coupon payments per year.
         :param interest_rate_model: The interest rate model to use for cash flow calculations.
         """
-        super().__init__(face_value, price, maturity, inflation_model)
+        super().__init__(face_value, payment_frequency, price, maturity, inflation_model)
         self.coupon_rate = coupon_rate
-        self.payment_frequency = payment_frequency
 
     def calculate_cash_flows(self) -> list:
         """

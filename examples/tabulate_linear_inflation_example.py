@@ -18,7 +18,7 @@ bond = FixedRateBond(
 )
 
 # Get the bond data table
-bond_data_table = bond.get_bond_data_table()
+bond_data_table = bond.table_cash_flows()
 
 # Display the table
 print("Bond Data Table with Linear Inflation Model:")

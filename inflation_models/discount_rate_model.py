@@ -6,7 +6,6 @@ class DiscountRateModel:
 
         :param rate: The constant discount rate.
         """
-        self.rate = rate
 
     def get_discount_rates(self, times: list) -> list:
         """

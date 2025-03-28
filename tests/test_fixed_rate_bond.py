@@ -91,7 +91,7 @@ class TestFixedRateBond(unittest.TestCase):
             inflation_model=self.constant_model
         )
 
-        bond_data_table = bond.get_bond_data_table()
+        bond_data_table = bond.table_cash_flows()
         self.assertEqual(len(bond_data_table), 11)  # 10 coupon payments + 1 final payment
         self.assertEqual(bond_data_table.columns.tolist(), [
             "Time (Years)", "Nominal Cash Flow", "Real Cash Flow", "Real Net Cash", "Discount Rate"
