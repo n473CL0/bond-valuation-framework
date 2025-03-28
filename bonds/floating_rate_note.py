@@ -7,7 +7,7 @@ class FloatingRateNote(Bond):
     The coupon rate of an FRN is not fixed but fluctuates based on a reference interest rate.
     """
 
-    def __init__(self, face_value: float, price: float, maturity: float, payment_frequency: int, inflation_model: DiscountRateModel, spread_bps: int):
+    def __init__(self, face_value: float, price: float, maturity: float, payment_frequency: int, inflation_model, spread_bps: int):
         """
         Initialize a floating rate note.
 
@@ -18,8 +18,7 @@ class FloatingRateNote(Bond):
         :param reference_rate_function: A function that returns the reference rate at a given time.
         :param inflation_model: The inflation model to use for cash flow calculations.
         """
-        super().__init__(face_value, price, maturity, inflation_model)
-        self.payment_frequency = payment_frequency
+        super().__init__(face_value, payment_frequency, price, maturity, inflation_model)
         self.spread = spread_bps / 100
 
     def calculate_cash_flows(self) -> list:
