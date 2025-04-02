@@ -1,5 +1,6 @@
 # Floating Rate Note
-from bonds.floating_rate_note import FloatingRateNote
+import csv
+from bonds.fixed_rate_bond import FixedRateBond
 from inflation_models.constant_inflation_model import ConstantDiscountRateModel
 
 
@@ -7,7 +8,7 @@ import os
 
 # Filepath settings
 graph_filepath = "_data/graph/"
-table_filepath = "_data/csv/"
+table_filepath = "_data/csv/coupon_adjustments"
 
 # Ensure directories exist
 os.makedirs(graph_filepath, exist_ok=True)
@@ -23,15 +24,36 @@ price = 900
 maturity = 5
 payment_frequency = 2  # Semi-annual
 
-floating_rate = FloatingRateNote(
+bond = FixedRateBond(
     face_value=face_value,
     price=price,
     maturity=maturity,
+    coupon_rate=0,
     payment_frequency=payment_frequency,
-    spread_bps=2,  # Example spread of 2%
     inflation_model=inflation
 )
 
-floating_rate.plot_cash_flows("Floating-rate cash flows - nominal", filepath=graph_filepath + "float_nominal")
-floating_rate.plot_cash_flows("Floating-rate cash flows - adjusted for inflation", filepath=graph_filepath + "float_inflation_adjusted", inflation_adjusted=True)
-floating_rate.table_cash_flows().to_csv(table_filepath + "float_coninfl.csv", index=False)
+coupon_rates = []
+profits = []
+profits_pv = []
+
+for cr in range(8):
+    coupon_rates.append(cr * 0.005)
+    bond.coupon_rate = coupon_rates[-1]
+    profits.append(bond.profit())
+    profits_pv.append(bond.profit(present_value=True))
+
+filename = 'fix_rate_cp_vary.csv'
+
+headers = ["Coupon Rate", "Profit", "Profit (PV)"]
+rows = zip(coupon_rates, profits, profits_pv)
+
+# Write to CSV file
+with open(filename, 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    
+    # Write headers
+    writer.writerow(headers)
+
+    # Write the data rows
+    writer.writerows(rows)

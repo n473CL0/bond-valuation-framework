@@ -77,8 +77,6 @@ class Bond:
         else:
             cash_flows = bond.calculate_cash_flows()
 
-        print(cash_flows)
-
         times = [cf[0] for cf in cash_flows]
         amounts = [round(cf[1], 2) for cf in cash_flows]
 
