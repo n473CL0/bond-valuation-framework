@@ -43,7 +43,7 @@ class ZeroCouponBond(Bond):
         phantom_payments = []
         n_periods = int(self.maturity * self.payment_frequency)
         
-        for t in range(1, n_periods):
+        for t in range(1, n_periods+1):
             cash_flow = self.ytm * self.price * (1 + self.ytm) ** (t - 1)
             phantom_payments.append((t / self.payment_frequency, cash_flow))
 
@@ -113,7 +113,7 @@ class ZeroCouponBond(Bond):
 
         ax1.axhline(0, color='black', linewidth=0.8)
         ax1.set_xlabel("Time (Years)", fontsize=10)
-        ax1.set_ylabel("Cash Flow Amount (£M)", fontsize=10)
+        ax1.set_ylabel("Cash Flow Amount (£)", fontsize=10)
         ax1.grid(True, linestyle='--', alpha=0.6)
         ax1.set_xticks(times)
         ax1.set_title(title, fontsize=12)

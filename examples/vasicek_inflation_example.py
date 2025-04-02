@@ -2,7 +2,7 @@ from bonds.fixed_rate_bond import FixedRateBond
 from bonds.floating_rate_note import FloatingRateNote
 from bonds.zero_coupon_bond import ZeroCouponBond
 from bonds.partially_amortizing_bond import PartiallyAmortizingBond
-from inflation_models.constant_inflation_model import ConstantDiscountRateModel
+from inflation_models.vasicek_inflation_model import VasicekDiscountRateModel
 
 import os
 
@@ -14,13 +14,20 @@ table_filepath = "_data/csv/"
 os.makedirs(graph_filepath, exist_ok=True)
 os.makedirs(table_filepath, exist_ok=True)
 
-# Create a constant inflation model
-inflation = ConstantDiscountRateModel(rate=0.03)
+# Create a Vasicek inflation model
+inflation = VasicekDiscountRateModel(
+    a=0.1,  # Mean reversion speed
+    b=0.03,  # Long-term mean rate
+    sigma=0.01,  # Volatility
+    r0=0.02,  # Initial rate
+    max_time=10,  # Maximum simulation time in years
+    dt=0.25  # Quarterly time steps
+)
 
 # Common bond parameters
 face_value = 1000
-price = 950
-maturity = 10
+price = 900
+maturity = 5
 payment_frequency = 2  # Semi-annual
 
 # Fixed Rate Bond
@@ -57,7 +64,7 @@ floating_rate = FloatingRateNote(
     price=price,
     maturity=maturity,
     payment_frequency=payment_frequency,
-    spread_bps=0.02,  # Example spread of 2%
+    spread_bps=2,  # Example spread of 2%
     inflation_model=inflation
 )
 
@@ -72,12 +79,15 @@ partially_amortizing = PartiallyAmortizingBond(
     maturity=maturity,
     payment_frequency=payment_frequency,
     coupon_rate=0.05,  # 5% coupon rate
-    baloon_payment=500,  # Example balloon payment at the end
+    baloon_payment=500,  # Example baloon payment at the end
     inflation_model=inflation
 )
 
 partially_amortizing.plot_cash_flows("Partially amortizing cash flows - nominal", filepath=graph_filepath + "part_nominal")
 partially_amortizing.plot_cash_flows("Partially amortizing cash flows - adjusted for inflation", filepath=graph_filepath + "part_inflation_adjusted", inflation_adjusted=True)
 partially_amortizing.table_cash_flows().to_csv(table_filepath + "part_coninfl.csv", index=False)
+
+for bond in [fix_rate, zero_coupon, floating_rate, partially_amortizing]:
+    print(f'{bond.__class__.__name__} : profit {round(bond.profit(),2)}, interest adjusted {round(bond.profit(present_value=True),2)}')
 
 print("All plots and tables have been generated successfully.")

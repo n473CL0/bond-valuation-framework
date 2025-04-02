@@ -41,11 +41,12 @@ class Bond:
         cash_flows = self.calculate_cash_flows()
         times = [time for time, _ in cash_flows]  # Extract times from cash flows
         discount_rates = self.inflation_model.get_discount_rates(times)  # Get discount rates for all times
+        period_rates = [dr / self.payment_frequency for dr in discount_rates]
 
         # Compute the cumulative discount factor over time
         cumulative_discount_factors = [1]  # Start with 1 for time = 0
-        for i in range(1, len(discount_rates)):
-            cumulative_discount_factors.append(cumulative_discount_factors[-1] * (1 + discount_rates[i]) ** -1)
+        for i in range(1, len(period_rates)):
+            cumulative_discount_factors.append(cumulative_discount_factors[-1] * (1 + period_rates[i]) ** -1)
 
         # Apply discounting correctly
         present_values = [
@@ -54,7 +55,14 @@ class Bond:
         ]
 
         return present_values
-
+    
+    def profit(self, present_value=False):
+        """
+        Returns the net profit of the bond investment as float
+        """
+        if present_value:
+            return sum([cf[1] for cf in self.calculate_pv_of_cash_flows()])
+        return sum([cf[1] for cf in self.calculate_cash_flows()])
     
     def plot_cash_flows(bond, title="Cash Flows", filepath="_data/graphs/", inflation_adjusted=False):
         """
@@ -92,7 +100,7 @@ class Bond:
 
         ax1.axhline(0, color='black', linewidth=0.8)
         ax1.set_xlabel("Time (Years)", fontsize=10)
-        ax1.set_ylabel("Cash Flow Amount (£M)", fontsize=10)
+        ax1.set_ylabel("Cash Flow Amount (£)", fontsize=10)
         ax1.grid(True, linestyle='--', alpha=0.6)
         ax1.set_xticks(times)
         ax1.set_title(title, fontsize=12)
@@ -156,3 +164,7 @@ class Bond:
         df = pd.DataFrame(data)
 
         return df
+    
+    def __str__(self):
+
+        return f"{self.__class__.__name__}\nFV%-12i\nMAT%-12i" % (self.face_value, self.maturity)

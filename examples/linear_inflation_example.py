@@ -19,8 +19,8 @@ inflation = LinearInflationModel(initial_rate=0.02, rate_change_per_year=0.005)
 
 # Common bond parameters
 face_value = 1000
-price = 950
-maturity = 10
+price = 900
+maturity = 5
 payment_frequency = 2  # Semi-annual
 
 # Fixed Rate Bond
@@ -57,7 +57,7 @@ floating_rate = FloatingRateNote(
     price=price,
     maturity=maturity,
     payment_frequency=payment_frequency,
-    spread_bps=0.02,  # Example spread of 2%
+    spread_bps=2,  # Example spread of 2%
     inflation_model=inflation
 )
 
@@ -79,5 +79,8 @@ partially_amortizing = PartiallyAmortizingBond(
 partially_amortizing.plot_cash_flows("Partially amortizing cash flows - nominal", filepath=graph_filepath + "part_nominal")
 partially_amortizing.plot_cash_flows("Partially amortizing cash flows - adjusted for inflation", filepath=graph_filepath + "part_inflation_adjusted", inflation_adjusted=True)
 partially_amortizing.table_cash_flows().to_csv(table_filepath + "part_coninfl.csv", index=False)
+
+for bond in [fix_rate, zero_coupon, floating_rate, partially_amortizing]:
+    print(f'{bond.__class__.__name__} : profit {round(bond.profit(),2)}, interest adjusted {round(bond.profit(present_value=True),2)}')
 
 print("All plots and tables have been generated successfully.")
