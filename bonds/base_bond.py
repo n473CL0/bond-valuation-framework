@@ -38,6 +38,9 @@ class Bond:
 
         :return: A list of tuples (time, present_value), where `time` is the time at which the cash flow occurs.
         """
+        if not self.inflation_model:
+            return self.calculate_cash_flows()
+
         cash_flows = self.calculate_cash_flows()
         times = [time for time, _ in cash_flows]  # Extract times from cash flows
         discount_rates = self.inflation_model.get_discount_rates(times)  # Get discount rates for all times

@@ -34,8 +34,11 @@ bond = FixedRateBond(
 )
 
 coupon_rates = []
-profits = []
-profits_pv = []
+nominal_profits = []
+constant_profits = []
+linear_profits = []
+
+
 
 for cr in range(8):
     coupon_rates.append(cr * 0.005)
